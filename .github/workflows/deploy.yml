@@ -1,0 +1,26 @@
+name: Node deploy
+
+on: 
+  push: 
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v1
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: show files
+        run: |
+          ls -a
+          console.log('end')
+
+
+          
