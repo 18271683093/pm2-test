@@ -23,11 +23,12 @@ jobs:
         uses: appleboy/scp-action@master
         env:
           HOST: ${{ secrets.HOST }}
-          USERNAME: '18271683093'
-          PORT: ${{ secrets.PORT }}       
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}  
+          PASSWORD : ${{ secrets.PASSWORD }}     
         with:
           source: "*"
           target: ${{secrets.ROOTPATH}} ${{secrets.PROJECTNAME}}
-          password : ${{ secrets.PASSWORD }}
+         
 
           
