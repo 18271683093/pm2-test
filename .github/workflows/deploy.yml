@@ -28,6 +28,6 @@ jobs:
           KEY: ${{ secrets.KEY }}
         with:
           source: "*"
-          target: ${{ROOTPATH}} ${{PROJECTNAME}}
+          target: "www/noderoot/${{PROJECTNAME}}"
 
           
