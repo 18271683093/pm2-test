@@ -11,6 +11,7 @@ const homePage = `
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style type="text/css">
+    
         * {
             padding: 0;
             margin: 0;
