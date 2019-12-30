@@ -24,10 +24,10 @@ jobs:
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: '18271683093'
-          PORT: ${{ secrets.PORT }}
-          PASSWORD : ${{ secrets.PASSWORD }}
+          PORT: ${{ secrets.PORT }}       
         with:
           source: "*"
           target: ${{secrets.ROOTPATH}} ${{secrets.PROJECTNAME}}
+          password : ${{ secrets.PASSWORD }}
 
           
