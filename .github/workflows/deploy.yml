@@ -25,7 +25,7 @@ jobs:
           HOST: ${{ secrets.HOST }}
           USERNAME: '18271683093'
           PORT: ${{ secrets.PORT }}
-          KEY: ${{ secrets.KEY }}
+          PASSWORD : ${{ secrets.PASSWORD }}
         with:
           source: "*"
           target: ${{secrets.ROOTPATH}} ${{secrets.PROJECTNAME}}
