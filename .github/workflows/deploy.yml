@@ -28,7 +28,7 @@ jobs:
           PASSWORD : ${{ secrets.PASSWORD }}     
         with:
           source: "*"
-          target: ${{secrets.ROOTPATH}}${{secrets.PROJECTNAME}}
+          target: ${{secrets.ROOTPATH}}
          
 
           
