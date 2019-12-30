@@ -22,10 +22,10 @@ jobs:
       - name: copy dir to remote server
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.server_host }}
-          username: ${{ secrets.server_userName }}
-          password: ${{ secrets.server_passWrod }}
-          source: ${{ secrets.source_path }}
-          target: ${{ secrets.server_path }}
+          host: '106.14.17.48'
+          username: 'dev'
+          password: 'dev123.'
+          source: '/app.js'
+          target: '/www/noderoot/'
 
           
