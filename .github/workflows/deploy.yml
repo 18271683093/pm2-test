@@ -27,8 +27,8 @@ jobs:
           PORT: ${{ secrets.PORT }}  
           PASSWORD : ${{ secrets.PASSWORD }}     
         with:
-          source: "*"
-          target: ${{secrets.ROOTPATH}}
+          source: ${{secrets.SOURCE}}
+          target: ${{secrets.ROOTPATH}} 
          
 
           
