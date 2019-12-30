@@ -43,8 +43,9 @@ const homePage = `
     <h2>项目部署上线示例</h2>
     <nav>
         <ul>
-            <li><a>列表</a></li>
-            <li><a>列表</a></li>
+            <li><a>列表1</a></li>
+            <li><a>列表2</a></li>
+            <li><a>列表3</a></li>
         </ul>
     </nav>
 </body>
