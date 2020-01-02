@@ -1,5 +1,6 @@
 const { JSDOM } = require('jsdom')
-const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', { url: 'http://localhost:8080' })
+const port = process.env.PORT || 8080
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', { url: `http://localhost:${port}` })
 global.window = dom.window
 global.document = window.document
 global.navigator = window.navigator
@@ -21,52 +22,52 @@ const { createBundleRenderer } = require('vue-server-renderer')
 const isProd = process.env.NODE_ENV === 'production'
 const useMicroCache = process.env.MICRO_CACHE !== 'false'
 const serverInfo =
-  `express/${require('express/package.json').version} ` +
-  `vue-server-renderer/${require('vue-server-renderer/package.json').version}`
+    `express/${require('express/package.json').version} ` +
+    `vue-server-renderer/${require('vue-server-renderer/package.json').version}`
 
 const app = express()
 app.use(cookieParser());
 const template = fs.readFileSync(resolve('./src/index.template.html'), 'utf-8')
 
 
-function createRenderer(bundle, options) {
-  // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
-  return createBundleRenderer(bundle, Object.assign(options, {
-    template,
-    // 组件缓存
-    cache: LRU({
-      max: 1000,
-      maxAge: 1000 * 60 * 15
-    }),
-    // 仅在vue-server-renderer是npm-linked时才需要
-    basedir: resolve('./dist'),
-    // 性能优化，推荐设置
-    runInNewContext: false
-  }))
+function createRenderer (bundle, options) {
+    // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
+    return createBundleRenderer(bundle, Object.assign(options, {
+        template,
+        // 组件缓存
+        cache: LRU({
+            max: 1000,
+            maxAge: 1000 * 60 * 15
+        }),
+        // 仅在vue-server-renderer是npm-linked时才需要
+        basedir: resolve('./dist'),
+        // 性能优化，推荐设置
+        runInNewContext: false
+    }))
 }
 
 let renderer
 let readyPromise
 if (isProd) {
-  //在生产中：使用内置的服务器包创建服务器渲染器。
-     //服务器包由vue-ssr-webpack-plugin生成。
-  const bundle = require('./dist/vue-ssr-server-bundle.json')
-  //客户端清单是可选的，但它允许渲染器自动推断 preload/prefetch 链接，并直接
-  //添加<script>标签在渲染过程中使用的任何异步块，避免瀑布请求。
-  const clientManifest = require('./dist/vue-ssr-client-manifest.json')
-  renderer = createRenderer(bundle, {
-    clientManifest
-  })
+    //在生产中：使用内置的服务器包创建服务器渲染器。
+    //服务器包由vue-ssr-webpack-plugin生成。
+    const bundle = require('./dist/vue-ssr-server-bundle.json')
+    //客户端清单是可选的，但它允许渲染器自动推断 preload/prefetch 链接，并直接
+    //添加<script>标签在渲染过程中使用的任何异步块，避免瀑布请求。
+    const clientManifest = require('./dist/vue-ssr-client-manifest.json')
+    renderer = createRenderer(bundle, {
+        clientManifest
+    })
 } else {
-  //在开发中：使用watch和hot-reload设置dev服务器，
-     //并在bundle / index模板更新上创建一个新的渲染器。
-  readyPromise = require('./build/setup-dev-server')(app, (bundle, options) => {
-    renderer = createRenderer(bundle, options)
-  })
+    //在开发中：使用watch和hot-reload设置dev服务器，
+    //并在bundle / index模板更新上创建一个新的渲染器。
+    readyPromise = require('./build/setup-dev-server')(app, (bundle, options) => {
+        renderer = createRenderer(bundle, options)
+    })
 }
 
 const serve = (path, cache) => express.static(resolve(path), {
-  maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
+    maxAge: 0
 })
 
 app.use(cors()); //允许跨域
@@ -80,8 +81,8 @@ app.use('/service-worker.js', serve('./dist/service-worker.js'));
 // 微缓存
 // https://www.nginx.com/blog/benefits-of-microcaching-nginx/
 const microCache = LRU({
-  max: 100,
-  maxAge: 1000
+    max: 100,
+    maxAge: 1000
 })
 
 //因为这个应用程序没有用户特定的内容，每个页面都是可以缓存的。
@@ -89,68 +90,68 @@ const microCache = LRU({
 //请求是否可缓存基于其URL和标题
 const isCacheable = req => useMicroCache
 
-function render(req, res) {
-  const s = Date.now()
-  res.setHeader("Content-Type", "text/html")
-  res.setHeader("Server", serverInfo)
-  const handleError = err => {
-    if (err.url) {
-      res.redirect(err.url)
-    } else if (err.code === 404) {
-      res.status(404).end('404 | Page Not Found')
-    } else {
-      // 渲染错误页面或重定向
-      res.status(500).end('500 | Internal Server Error')
-      console.error(`error during render : ${req.url}`)
-      console.error(err.stack)
+function render (req, res) {
+    const s = Date.now()
+    res.setHeader("Content-Type", "text/html")
+    res.setHeader("Server", serverInfo)
+    const handleError = err => {
+        if (err.url) {
+            res.redirect(err.url)
+        } else if (err.code === 404) {
+            res.status(404).end('404 | Page Not Found')
+        } else {
+            // 渲染错误页面或重定向
+            res.status(500).end('500 | Internal Server Error')
+            console.error(`error during render : ${req.url}`)
+            console.error(err.stack)
+        }
     }
-  }
 
-  const cacheable = isCacheable(req)
-  if (cacheable) {
-    const hit = microCache.get(req.url)
-    if (hit) {
-      if (!isProd) {
-        console.log(`cache hit!`)
-      }
-      return res.end(hit)
-    }
-  }
-
-  const context = {
-    title: 'vueblog', // 默认标题
-    url: req.url,
-    cookies: req.cookies
-  }
-  renderer.renderToString(context, (err, html) => {
-    if (err) {
-      return handleError(err)
-    }
-    res.end(html)
+    const cacheable = isCacheable(req)
     if (cacheable) {
-      microCache.set(req.url, html)
+        const hit = microCache.get(req.url)
+        if (hit) {
+            if (!isProd) {
+                console.log(`cache hit!`)
+            }
+            return res.end(hit)
+        }
     }
-    if (!isProd) {
-      console.log(`whole request: ${Date.now() - s}ms`)
+
+    const context = {
+        title: 'vueblog', // 默认标题
+        url: req.url,
+        cookies: req.cookies
     }
-  })
+    renderer.renderToString(context, (err, html) => {
+        if (err) {
+            return handleError(err)
+        }
+        res.end(html)
+        if (cacheable) {
+            microCache.set(req.url, html)
+        }
+        if (!isProd) {
+            console.log(`whole request: ${Date.now() - s}ms`)
+        }
+    })
 }
 // 前端路由拦截
-app.get('/login', function(req, res, next) {
-  if (req.cookies.token) {
-    res.redirect('/index')
-  } else {
-    next()
-  }
+app.get('/login', function (req, res, next) {
+    if (req.cookies.token) {
+        res.redirect('/index')
+    } else {
+        next()
+    }
 })
 
 // 服务端路由拦截
-app.get(['/admin', '/admin/*', '/publish', '/publish/*', '/updateAdminPassword', '/updateAdminInfo'], function(req, res, next) {
-  if (req.cookies.token) {
-    next()
-  } else {
-    res.redirect('/login')
-  }
+app.get(['/admin', '/admin/*', '/publish', '/publish/*', '/updateAdminPassword', '/updateAdminInfo'], function (req, res, next) {
+    if (req.cookies.token) {
+        next()
+    } else {
+        res.redirect('/login')
+    }
 })
 
 // 获取已发布的文章
@@ -202,10 +203,10 @@ app.put('/api/password', router.updateAdminPassword);
 app.delete('/api/article', router.deleteArticle);
 
 app.get('*', isProd ? render : (req, res) => {
-  readyPromise.then(() => render(req, res))
+    readyPromise.then(() => render(req, res))
 })
 
-const port = process.env.PORT || 8080
+
 app.listen(port, () => {
-  console.log(`server started at localhost:${port}`)
+    console.log(`server started at localhost:${port}`)
 })
