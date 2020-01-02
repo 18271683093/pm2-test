@@ -1,7 +1,8 @@
 // app.s
 
 const http = require('http');
-
+console.log(process.env.env.version)
+console.log("process.env")
 const homePage = `
 <!DOCTYPE html>
 <html lang="en">
@@ -43,7 +44,7 @@ const homePage = `
     <h2>项目部署上线示例</h2>
     <nav>
         <ul>
-            <li><a>列表1</a></li>
+            <li><a>列1</a></li>
             <li><a>列表2</a></li>
             <li><a>列3</a></li>
             <li><a>列3</a></li>
