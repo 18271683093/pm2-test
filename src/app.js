@@ -8,7 +8,6 @@ import * as filters from './util/filters'
 import axios from 'axios'
 import Toasted from 'vue-toasted'
 import cookies from 'js-cookie'
-const port = process.env.PORT || 8080
 Vue.prototype.axios = axios;
 // minxin 处理动态标题
 Vue.mixin(titleMixin)
@@ -23,8 +22,7 @@ const router = createRouter()
 sync(store, router)
 axios.defaults.timeout = 5000
 
-const baseURL = `http://localhost:${port}/api`
-
+const baseURL = window.location.origin + `/api`
 axios.defaults.baseURL = baseURL
 
 // http response 拦截器
