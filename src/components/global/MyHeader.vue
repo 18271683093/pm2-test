@@ -6,15 +6,22 @@
     </div>
     <nav class="nav clearfix">
       <div class="logo">
-        <div class="v"></div>
+        <div class="letter"
+             data-text="z"></div>
       </div>
       <ul>
-        <li v-for="(item,index) in links" :key="index">
+        <li v-for="(item,index) in links"
+            :key="index">
           <router-link :to="item.path">{{ item.name }}</router-link>
         </li>
       </ul>
       <div class="search">
-        <input type="text" name="search" placeholder="search" v-model="searchInfo" autofocus @keyup.enter="search">
+        <input type="text"
+               name="search"
+               placeholder="search"
+               v-model="searchInfo"
+               autofocus
+               @keyup.enter="search">
       </div>
     </nav>
   </header>
@@ -23,7 +30,7 @@
 import axios from 'axios'
 export default {
   name: 'MyHeader',
-  data() {
+  data () {
     return {
       links: [{
         name: '首页',
@@ -39,12 +46,12 @@ export default {
     }
   },
   computed: {
-    administrator() {
+    administrator () {
       return this.$store.state.administrator
     }
   },
   methods: {
-    search() {
+    search () {
       this.$router.push({
         name: 'search',
         params: {
