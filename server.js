@@ -119,7 +119,7 @@ function render (req, res) {
     }
 
     const context = {
-        title: 'vueblog', // 默认标题
+        title: 'zRainy的博客', // 默认标题
         url: req.url,
         cookies: req.cookies
     }

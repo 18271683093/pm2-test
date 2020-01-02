@@ -14,7 +14,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,index) in data" :key="index">
+            <tr v-for="(item,index) in data"
+                :key="index">
               <td>
                 <router-link :to="{name:'article',params:{id:item.date}}">{{item.title}}</router-link>
               </td>
@@ -25,11 +26,18 @@
             </tr>
           </tbody>
         </table>
-        <div class="page" v-show="maxPage > 1">
-          <router-link v-if="page > 1" :to="{name:'admin',params:{page:page - 1}}" class="prev">《上一页</router-link>
-          <a v-else class="disabled prev">《上一页</a>
-          <router-link v-if="hasMore" :to="{name:'admin',params:{page:page + 1}}" class="next">下一页》</router-link>
-          <a v-else class="disabled next">下一页》</a>
+        <div class="page"
+             v-show="maxPage > 1">
+          <router-link v-if="page > 1"
+                       :to="{name:'admin',params:{page:page - 1}}"
+                       class="prev">《上一页</router-link>
+          <a v-else
+             class="disabled prev">《上一页</a>
+          <router-link v-if="hasMore"
+                       :to="{name:'admin',params:{page:page + 1}}"
+                       class="next">下一页》</router-link>
+          <a v-else
+             class="disabled next">下一页》</a>
         </div>
       </div>
     </div>
@@ -38,53 +46,53 @@
 <script>
 import AdminAside from '../../components/admin/AdminAside.vue'
 export default {
-  name:'Admin',
-  title() {
-    return '管理后台|vueblog'
+  name: 'Admin',
+  title () {
+    return '管理后台'
   },
   components: {
     AdminAside
   },
 
-  beforeMount() {
+  beforeMount () {
     if (this.$root._isMounted) {
       this.articles()
     }
   },
   computed: {
-    data() {
+    data () {
       return this.$store.state.articles.result;
     },
-    number() {
+    number () {
       return this.$store.state.articles.total;
     },
-    maxPage() {
+    maxPage () {
       return Math.ceil(Number(this.number) / 15)
     },
-    page() {
+    page () {
       return Number(this.$route.params.page) || 1
     },
-    hasMore() {
+    hasMore () {
       return this.page < this.maxPage;
     }
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       this.articles()
     }
   },
   methods: {
-    articles() {
+    articles () {
       this.$store.dispatch('ARTICLES')
     },
-    del(item) {
+    del (item) {
       var id = item.date;
       this.axios.delete(`/article?id=${id}`).then((data) => {
         this.$toasted.show(data.data.message)
         if (data.data.code === 200) this.articles()
       })
     },
-    edit(item) {
+    edit (item) {
       this.$router.push({ name: 'publish', params: { id: item.date } })
     }
   }

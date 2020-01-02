@@ -1,9 +1,10 @@
 <template>
-    <div class="article-detail">
-      <h3 class="title">{{title}}</h3>
-      <article class="content markdown-body" v-html="content">
-      </article>
-    </div>
+  <div class="article-detail">
+    <h3 class="title">{{title}}</h3>
+    <article class="content markdown-body"
+             v-html="content">
+    </article>
+  </div>
 </template>
 <script>
 import marked from 'marked'
@@ -23,19 +24,19 @@ marked.setOptions({
 })
 export default {
   name: 'ArticleDetail',
-  data(){
+  data () {
     return {
-      article:this.$store.state.articleDetail
+      article: this.$store.state.articleDetail
     }
   },
-  title() {
-      return this.article.title + ' | vueblog'
+  title () {
+    return this.article.title
   },
   computed: {
-    title() {
+    title () {
       return this.article.title
     },
-    content() {
+    content () {
       return marked(this.article.content)
     }
   }

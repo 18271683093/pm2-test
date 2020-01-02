@@ -2,8 +2,10 @@
   <aside class="left">
     <ul class="menu">
       <li>
-        <h3>VueBlog</h3></li>
-      <li v-for="item in menu">
+        <h3>blog</h3>
+      </li>
+      <li v-for="(item,index) in menu"
+          :key="index">
         <router-link :to="{path:item.path}">{{item.name}}</router-link>
       </li>
       <li><a @click="logout">退出登录</a></li>
@@ -12,8 +14,8 @@
 </template>
 <script>
 export default {
-  name:'AdminAside',
-  data() {
+  name: 'AdminAside',
+  data () {
     return {
       menu: [{
         name: '网站首页',
@@ -34,7 +36,7 @@ export default {
     }
   },
   methods: {
-    logout() {
+    logout () {
       this.axios.post('/logout').then((data) => {
         if (data.data.code === 200) {
           this.$router.push({ name: 'index' })
