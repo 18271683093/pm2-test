@@ -40,6 +40,7 @@ axios.interceptors.response.use(
 
 // http request 拦截器
 axios.interceptors.request.use(function (config) {
+    config.params._t = new Date().getTime()
     return config;
 }, function (error) {
     return Promise.reject(error);
